@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utsav Mehta | Backend Developer Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom CSS for developer effects */
+        .terminal {
+            background-color: #0a0a0a;
+            color: #38bdf8;
+            font-family: 'Courier New', monospace;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .terminal::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(90deg, #111, #333);
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        
+        .terminal-header {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            color: #ccc;
+            font-size: 12px;
+        }
+        
+        .cursor {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch::before {
+            color: #38bdf8;
+            animation: glitch-effect 3s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+        }
+        
+        .glitch::after {
+            color: #818cf8;
+            animation: glitch-effect 2s infinite reverse;
+            clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+        }
+        
+        @keyframes glitch-effect {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(-3px, -3px); }
+            60% { transform: translate(3px, 3px); }
+            80% { transform: translate(3px, -3px); }
+            100% { transform: translate(0); }
+        }
+        
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+            background-color: black;
+            overflow: hidden;
+        }
+        
+        .matrix-char {
+            position: absolute;
+            color: #38bdf8;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            opacity: 0;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+                opacity: 1;
+            }
+        }
+        
+        .hexagon {
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+        
+        .skill-bar {
+            position: relative;
+            height: 4px;
+            background-color: #333;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .skill-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            animation: progress-animation 2s ease-out forwards;
+        }
+        
+        @keyframes progress-animation {
+            from { width: 0; }
+            to { width: var(--progress); }
+        }
+        
+        .dev-card {
+            transition: all 0.3s ease;
+            border: 1px solid #1e293b;
+        }
+        
+        .dev-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3);
+            border-color: #38bdf8;
+        }
+        
+        /* Spring colors */
+        .spring-bg {
+            background: linear-gradient(135deg, #6DB33F 0%, #6DB33F 25%, #343A40 25%, #343A40 50%, #6DB33F 50%, #6DB33F 75%, #343A40 75%, #343A40 100%);
+            background-size: 20px 20px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .terminal-text {
+                font-size: 14px;
+            }
+            
+            .glitch::before, .glitch::after {
+                animation: none;
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <!-- Matrix background effect -->
+    <div id="matrix-bg" class="matrix-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-gray-900 bg-opacity-90 z-50 border-b border-blue-900">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="glitch text-xl font-bold" data-text="Utsav_Mehta">
+                Utsav_Mehta
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#about" class="hover:text-blue-400 transition">About</a>
+                <a href="#skills" class="hover:text-blue-400 transition">Skills</a>
+                <a href="#experience" class="hover:text-blue-400 transition">Experience</a>
+                <a href="#projects" class="hover:text-blue-400 transition">Projects</a>
+                <a href="#contact" class="hover:text-blue-400 transition">Contact</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-blue-400">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-900 bg-opacity-95 px-4 py-2 border-t border-blue-900">
+            <div class="flex flex-col space-y-3">
+                <a href="#about" class="hover:text-blue-400 transition">About</a>
+                <a href="#skills" class="hover:text-blue-400 transition">Skills</a>
+                <a href="#experience" class="hover:text-blue-400 transition">Experience</a>
+                <a href="#projects" class="hover:text-blue-400 transition">Projects</a>
+                <a href="#contact" class="hover:text-blue-400 transition">Contact</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-4">
+        <div class="container mx-auto flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <div class="terminal p-6 md:p-8 mb-6">
+                    <div class="terminal-header">user@utsav-dev:~$</div>
+                    <div class="terminal-text mt-8">
+                        <p class="mb-2">> whoami</p>
+                        <p class="mb-4 text-blue-400">Utsav Mehta - Backend Developer | Spring Boot Specialist</p>
+                        <p class="mb-2">> date</p>
+                        <p class="mb-4 text-blue-400" id="current-date"></p>
+                        <p class="mb-2">> status --development</p>
+                        <p class="mb-4 text-blue-400">Spring Boot Active | Microservices Running | Database Connected</p>
+                        <p class="mb-2">> <span class="cursor">_</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="relative">
+                    <div class="hexagon w-64 h-72 bg-gradient-to-br from-blue-500 to-blue-800 flex items-center justify-center">
+                        <div class="hexagon w-60 h-68 bg-gray-900 flex items-center justify-center overflow-hidden">
+                            <img src="Untitled design.jpg" 
+                                 alt="Utsav Mehta" 
+                                 class="w-full h-full object-cover opacity-90">
+                        </div>
+                    </div>
+                    <div class="absolute -bottom-5 left-1/2 transform -translate-x-1/2 bg-blue-900 text-xs px-3 py-1 rounded-full">
+                        <span class="text-blue-400">SPRING_BOOT_DEV</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="py-20 px-4 bg-gradient-to-b from-gray-900 to-gray-800">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-12 text-center glitch" data-text="About_Me">About_Me</h2>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="md:w-1/2">
+                    <div class="terminal p-6 h-full">
+                        <div class="terminal-header">user@utsav-dev:~/about$</div>
+                        <div class="terminal-text mt-8">
+                            <p class="mb-4">> cat bio.txt</p>
+                            <p class="text-blue-400 mb-4">
+                                I am a backend developer specializing in Spring Boot and microservices architecture. 
+                                With expertise in building scalable and secure backend systems, I create robust solutions 
+                                that power modern applications.
+                            </p>
+                            <p class="mb-4">> ls education/</p>
+                            <div class="text-blue-400 space-y-4 mb-4">
+                                <div>
+                                    <p class="font-bold">B.Tech in Computer Science Engineering</p>
+                                    <p class="text-sm">Lovely Professional University, Phagwara, Punjab (2020-2024)</p>
+                                    <p class="text-sm">CGPA: 6.7</p>
+                                </div>
+                                <div>
+                                    <p class="font-bold">Higher Secondary (12th Grade)</p>
+                                    <p class="text-sm">Persistent Students Nes HR SEC School, Nainital, Uttarakhand</p>
+                                    <p class="text-sm">Percentage: 60.2%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="terminal p-6 h-full">
+                        <div class="terminal-header">user@utsav-dev:~/achievements$</div>
+                        <div class="terminal-text mt-8">
+                            <p class="mb-4">> cat achievements.txt</p>
+                            <div class="text-blue-400 space-y-4">
+                                <div>
+                                    <p class="font-bold">3-Star Problem Solving</p>
+                                    <p class="text-sm">HackerRank</p>
+                                </div>
+                                <div>
+                                    <p class="font-bold">1000+ Coding Questions Solved</p>
+                                    <p class="text-sm">CodeChef</p>
+                                </div>
+                                <div>
+                                    <p class="font-bold">Real-time Credit Scoring Platform</p>
+                                    <p class="text-sm">Developed for Swedbank using microservices</p>
+                                </div>
+                                <div>
+                                    <p class="font-bold">Fintech Platform Development</p>
+                                    <p class="text-sm">Created EasyCapital for local shopkeepers</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 px-4 bg-gray-800">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-12 text-center glitch" data-text="My_Skills">My_Skills</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Programming Languages -->
+                <div class="dev-card bg-gray-900 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-code text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-blue-400">Programming</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm mb-1">Java</p>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 95%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm mb-1">JavaScript</p>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm mb-1">C++</p>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 80%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm mb-1">C#</p>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Spring Ecosystem -->
+                <div class="dev-card bg-gray-900 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-leaf text-green-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-blue-400">Spring Ecosystem</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-leaf text-green-400 mr-2"></i>
+                            <span class="text-sm">Spring Boot</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-shield-alt text-blue-400 mr-2"></i>
+                            <span class="text-sm">Spring Security</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-database text-blue-400 mr-2"></i>
+                            <span class="text-sm">Spring Data JPA</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-cloud text-blue-400 mr-2"></i>
+                            <span class="text-sm">Spring Cloud</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-project-diagram text-blue-400 mr-2"></i>
+                            <span class="text-sm">Hibernate</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-key text-blue-400 mr-2"></i>
+                            <span class="text-sm">JWT</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-boxes text-blue-400 mr-2"></i>
+                            <span class="text-sm">Maven</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Databases & Tools -->
+                <div class="dev-card bg-gray-900 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-database text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-blue-400">Databases & Tools</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm mb-1">MySQL</p>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 90%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm mb-1">MongoDB</p>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm mb-1">Docker</p>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 80%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm mb-1">Kafka</p>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 75%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm mb-1">Redis</p>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 70%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Experience Section -->
+    <section id="experience" class="py-20 px-4 bg-gradient-to-b from-gray-800 to-gray-900">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-12 text-center glitch" data-text="My_Experience">My_Experience</h2>
+            
+            <div class="space-y-8">
+                <!-- Experience 1 -->
+                <div class="dev-card bg-gray-900 p-6 rounded-lg">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-400">Backend Developer</h3>
+                            <p class="text-blue-300">Chugh Consultants (Z-melon Technologies Pvt. Ltd.), Indore, India</p>
+                        </div>
+                        <span class="text-sm text-gray-400 mt-2 md:mt-0">October 2024 – Present</span>
+                    </div>
+                    <div class="text-gray-300 space-y-2">
+                        <p class="flex items-start">
+                            <span class="text-blue-400 mr-2">></span>
+                            Developed a real-time credit scoring platform for Swedbank (Sweden) using microservices architecture
+                        </p>
+                        <p class="flex items-start">
+                            <span class="text-blue-400 mr-2">></span>
+                            Implemented Kafka for real-time data processing, enhancing decision-making speed
+                        </p>
+                        <p class="flex items-start">
+                            <span class="text-blue-400 mr-2">></span>
+                            Integrated OAuth for secure user authentication
+                        </p>
+                        <p class="flex items-start">
+                            <span class="text-blue-400 mr-2">></span>
+                            Utilized Redis for efficient data caching, optimizing application performance
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Experience 2 -->
+                <div class="dev-card bg-gray-900 p-6 rounded-lg">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-400">Backend Developer Intern</h3>
+                            <p class="text-blue-300">ItJobxs.com, Delhi, India</p>
+                        </div>
+                        <span class="text-sm text-gray-400 mt-2 md:mt-0">June 2024 – October 2024</span>
+                    </div>
+                    <div class="text-gray-300 space-y-2">
+                        <p class="flex items-start">
+                            <span class="text-blue-400 mr-2">></span>
+                            Developed scalable backend solutions using .NET Core
+                        </p>
+                        <p class="flex items-start">
+                            <span class="text-blue-400 mr-2">></span>
+                            Streamlined database operations with Entity Framework
+                        </p>
+                        <p class="flex items-start">
+                            <span class="text-blue-400 mr-2">></span>
+                            Implemented WebRTC for real-time communication features
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 px-4 bg-gray-900">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-12 text-center glitch" data-text="My_Projects">My_Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="dev-card bg-gray-800 p-6 rounded-lg">
+                    <div class="mb-4">
+                        <div class="w-full h-40 bg-gray-900 rounded-lg mb-3 flex items-center justify-center spring-bg">
+                            <i class="fas fa-coins text-5xl text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-blue-400 mb-2">EasyCapital</h3>
+                        <p class="text-gray-300 text-sm">
+                            Fintech platform assisting local shopkeepers in obtaining loans with real-time loan comparisons.
+                        </p>
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">ReactJS</span>
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">Node.js</span>
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">MongoDB</span>
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">AWS EC2</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <a href="https://easycapital.co.in/" class="text-blue-400 hover:text-blue-300 text-sm flex items-center">
+                            View Details <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Project 2 -->
+                <div class="dev-card bg-gray-800 p-6 rounded-lg">
+                    <div class="mb-4">
+                        <div class="w-full h-40 bg-gray-900 rounded-lg mb-3 flex items-center justify-center">
+                            <i class="fas fa-server text-5xl text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-blue-400 mb-2">REST Assured API Framework</h3>
+                        <p class="text-gray-300 text-sm">
+                            API automation framework using Excel inputs with response reporting directly in Excel.
+                        </p>
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">Maven</span>
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">TestNG</span>
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">Java</span>
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">Apache POI</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <a href="https://github.com/UtsavMehta1975/java-Restassured.git" class="text-blue-400 hover:text-blue-300 text-sm flex items-center">
+                            View Details <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Project 3 -->
+                <div class="dev-card bg-gray-800 p-6 rounded-lg">
+                    <div class="mb-4">
+                        <div class="w-full h-40 bg-gray-900 rounded-lg mb-3 flex items-center justify-center">
+                            <i class="fas fa-comments text-5xl text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-blue-400 mb-2">ChatApp</h3>
+                        <p class="text-gray-300 text-sm">
+                            Responsive chat application with authentication and real-time messaging.
+                        </p>
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">Next.js</span>
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">Tailwind CSS</span>
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">Appwrite</span>
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">Socket.IO</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <a href="https://thumbs.dreamstime.com/z/under-maintenance-detailed-illustration-grungy-maintanance-construction-background-61865170.jpg" class="text-blue-400 hover:text-blue-300 text-sm flex items-center">
+                            View Details <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Project 4 -->
+                <div class="dev-card bg-gray-800 p-6 rounded-lg">
+                    <div class="mb-4">
+                        <div class="w-full h-40 bg-gray-900 rounded-lg mb-3 flex items-center justify-center">
+                            <i class="fas fa-music text-5xl text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-blue-400 mb-2">DanceYay API</h3>
+                        <p class="text-gray-300 text-sm">
+                            Backend microservices for a digital product with REST APIs and signaling server.
+                        </p>
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">.NET Core 3.1</span>
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">SignalR</span>
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">AWS</span>
+                            <span class="text-xs bg-blue-900 text-blue-400 px-2 py-1 rounded">Swagger UI</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <a href="https://api.danceyay.com/index.html" class="text-blue-400 hover:text-blue-300 text-sm flex items-center">
+                            View Details <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-4 bg-gray-900">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-12 text-center glitch" data-text="Contact_Me">Contact_Me</h2>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="md:w-1/2">
+                    <div class="terminal p-6 h-full">
+                        <div class="terminal-header">user@utsav-dev:~/contact$</div>
+                        <div class="terminal-text mt-8">
+                            <p class="mb-4">> ./contact.sh</p>
+                            <div class="text-blue-400 space-y-4">
+                                <div class="flex items-center">
+                                    <i class="fas fa-envelope mr-3"></i>
+                                    <span>lastk123456789@gmail.com</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-phone mr-3"></i>
+                                    <span>+91-7717549485</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fab fa-linkedin mr-3"></i>
+                                    <span>https://www.linkedin.com/in/utsav-mehta-12utsav/</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fab fa-github mr-3"></i>
+                                    <span>https://github.com/UtsavMehta1975</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-code mr-3"></i>
+                                    <span>https://www.codechef.com/users/utsav1504</span>
+                                </div>
+                            </div>
+                            <p class="mt-6 mb-2">> status --availability</p>
+                            <p class="text-blue-400">Open to new opportunities | Remote or Delhi/NCR | Full-time positions</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <form class="space-y-4">
+                        <div>
+                            <label class="block text-blue-400 text-sm mb-1">Your Name</label>
+                            <input type="text" class="w-full bg-gray-800 border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-blue-500" placeholder="Enter your name">
+                        </div>
+                        <div>
+                            <label class="block text-blue-400 text-sm mb-1">Email</label>
+                            <input type="email" class="w-full bg-gray-800 border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-blue-500" placeholder="your@email.com">
+                        </div>
+                        <div>
+                            <label class="block text-blue-400 text-sm mb-1">Subject</label>
+                            <select class="w-full bg-gray-800 border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-blue-500">
+                                <option>Job Opportunity</option>
+                                <option>Project Collaboration</option>
+                                <option>Technical Consultation</option>
+                                <option>Other Inquiry</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-blue-400 text-sm mb-1">Message</label>
+                            <textarea class="w-full bg-gray-800 border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-blue-500 h-32" placeholder="Enter your message..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-blue-100 font-bold py-2 px-4 rounded transition flex items-center justify-center">
+                            <i class="fas fa-paper-plane mr-2"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-6 px-4 bg-gray-900 border-t border-blue-900">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-400 text-sm mb-4 md:mb-0">
+                    © 2024 Utsav Mehta. All rights reserved.
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition">
+                        <i class="fab fa-hackerrank"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Current date for terminal
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', options);
+        
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+        
+        // Matrix background effect
+        function createMatrixEffect() {
+            const container = document.getElementById('matrix-bg');
+            const chars = "01!@#$%^&*()_+-=[]{}|;':,.<>?/\\  ";
+            
+            function createStream() {
+                const stream = document.createElement('div');
+                stream.className = 'matrix-char';
+                
+                // Random position
+                const left = Math.random() * 100;
+                stream.style.left = `${left}%`;
+                
+                // Random animation duration
+                const duration = 5 + Math.random() * 10;
+                stream.style.animationDuration = `${duration}s`;
+                
+                // Random delay
+                const delay = Math.random() * 5;
+                stream.style.animationDelay = `${delay}s`;
+                
+                // Random characters
+                let content = '';
+                const length = 5 + Math.floor(Math.random() * 15);
+                for (let i = 0; i < length; i++) {
+                    const randomChar = chars[Math.floor(Math.random() * chars.length)];
+                    content += randomChar;
+                }
+                
+                stream.textContent = content;
+                container.appendChild(stream);
+                
+                // Remove after animation completes
+                setTimeout(() => {
+                    stream.remove();
+                }, duration * 1000);
+            }
+            
+            // Create initial streams
+            for (let i = 0; i < 50; i++) {
+                setTimeout(createStream, i * 200);
+            }
+            
+            // Continue creating new streams
+            setInterval(createStream, 200);
+        }
+        
+        // Start matrix effect after page loads
+        window.addEventListener('load', createMatrixEffect);
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
